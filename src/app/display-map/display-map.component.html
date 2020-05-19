@@ -1,0 +1,139 @@
+
+ <mgl-map [style]="'mapbox://styles/mapbox/dark-v9'" 
+ [zoom]="[3]"
+  [center]="[-103.59179687498357, 40.66995747013945]"
+  [cursorStyle]="cursorStyle"
+  [doubleClickZoom]= 'true'>
+  
+    
+  <ng-container *ngIf="earthquakes">
+      <mgl-geojson-source
+        id="earthquakes"
+        [data]="earthquakes"
+        [cluster]="true"
+        [clusterMaxZoom]="14"
+        [clusterRadius]="50"
+      >
+      </mgl-geojson-source>
+     
+     
+     
+     
+      <mgl-markers-for-clusters source="earthquakes">
+        <ng-template mglPoint let-feature >
+          
+          <div class="marker" (mouseover)="onClick($event, feature)"   *ngIf="!isShowDivIf">
+            {{ feature.properties['description'] }}
+          </div>
+          
+        </ng-template>
+        <ng-template mglClusterPoint let-feature   >
+          <div class="marker-cluster"  (click)="onClickCluster($event, feature)"  *ngIf="!isShowClusterDivIf">
+            {{ feature.properties?.point_count }}
+          </div>
+        </ng-template>
+        
+      </mgl-markers-for-clusters> 
+      <mgl-control mglNavigation></mgl-control>
+      <mgl-control mglFullscreen></mgl-control>
+      
+      <mgl-control >
+        <button (click)="onRemove()" class="button button3" style="font-family:'calibri';">Toggle Points</button><br>
+        <button (click)="onRemoveCluster()" class="button button3" style="font-family:'calibri';" >Toggle Layers</button>
+      </mgl-control>
+    
+     <div  *ngIf="!isShowDivIf">
+      <mgl-popup *ngIf="selectedPoint" [feature]="selectedPoint" [closeButton]="true">
+        <span style="color:black;font-weight: bold;">Magnitude: </span>
+        <span [innerHTML]="selectedPoint.properties?.description"></span><br>
+        <span style="color:black;font-weight: bold;">Location:</span><span [innerHTML]="selectedPoint.properties?.description2"></span>
+      <br>  <button class="button button3 active" (click)="onRemove()" >RemovePoints</button>
+      </mgl-popup>
+     </div>
+      
+      
+     <div  *ngIf="!isShowClusterDivIf"> <mgl-popup *ngIf="selectedcluster" [feature]="selectedcluster ">
+      <br>  <button class="button button3 active"  (click)="onRemoveCluster()">RemoveLayer</button>
+    </mgl-popup></div> 
+    
+
+
+
+      <!-- <mgl-layer
+      
+        id="clusters"
+        type="circle"
+        source="earthquakes"
+        [layout]="layouts['clusters']"
+        [paint]="{
+          'circle-color': {
+            property: 'point_count',
+            type: 'interval',
+            stops: [
+              [0, '#51bbd6'],
+              [50, '#34eb8c'],
+              [100, '#f1f075'],
+              [125, '#a8eb34'],
+              [500, '#d88cf2']
+              
+            ]
+          },
+          'circle-radius': {
+            property: 'point_count',
+            type: 'interval',
+            stops: [
+              [0, 20],
+              [50 ,25],
+              [100, 30],
+              [125, 35],
+              [500, 40]
+            ]
+          }
+        }"
+        (click)="onClickCluster($event, feature)"
+        
+      >
+      </mgl-layer>
+      <mgl-layer
+        id="cluster-count"
+        type="symbol"
+        source="earthquakes"
+        
+        [layout]="{
+          'text-field': '{point_count}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12
+        }"
+        
+      >
+      </mgl-layer> -->
+      <!-- <mgl-layer
+        id="unclustered-point"
+        type="circle"
+        source="earthquakes"
+        [filter]="['!has', 'point_count']"
+      
+        [paint]="{
+          'circle-color': '#11da2f',
+          'circle-radius': 6,
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#fff'
+        }"
+        (click)="onClick($event)"
+        (mouseEnter)="cursorStyle = 'pointer'"
+        (mouseLeave)="cursorStyle = ''"
+      >
+      </mgl-layer> -->
+     
+    </ng-container>
+  </mgl-map>
+
+
+
+
+
+
+
+
+
+
